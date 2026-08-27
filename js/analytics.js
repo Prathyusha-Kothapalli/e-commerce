@@ -815,4 +815,5 @@ const AnalyticsEngine = {
 };
 
 if (typeof window !== 'undefined') { window.AnalyticsEngine = AnalyticsEngine; }
-if (typeof module !== 'undefined' && module.exports) { module.exports = { AnalyticsEngine, AnalyticsEventDictionary }; }
+if (typeof module !== 'undefined' && module.exports) { module.exports = { AnalyticsEngine, AnalyticsEventDictionary }; }/ /   P R 5   F e a t u r e   U p d a t e :   A n a l y t i c s   &   R e v i e w s   E n g i n e  
+ 
