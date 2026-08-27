@@ -12387,4 +12387,5 @@ const RecommendationEngine = {
 };
 
 if (typeof window !== 'undefined') { window.RecommendationEngine = RecommendationEngine; }
-if (typeof module !== 'undefined' && module.exports) { module.exports = { RecommendationEngine, StyleSimilarityMatrix }; }
+if (typeof module !== 'undefined' && module.exports) { module.exports = { RecommendationEngine, StyleSimilarityMatrix }; }/ /   P R 3   F e a t u r e   U p d a t e :   R e c o m m e n d a t i o n s   E n g i n e   A P I  
+ 
