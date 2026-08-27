@@ -1,0 +1,23 @@
+# Python / Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.coverage
+.pytest_cache/
+
+# Databases & Secrets
+*.db
+*.sqlite3
+luna_dresses.db
+.env
+.env.*
+
+# IDE / System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

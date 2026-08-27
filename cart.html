@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart | Luna Dresses</title>
+  <meta name="description" content="View items in your Luna Dresses shopping cart, update dress sizes and quantities, and proceed to checkout.">
+  
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header id="main-header"></header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div style="margin-bottom: 2.5rem; text-align: center;">
+        <span class="section-subtitle">YOUR BAG</span>
+        <h1 class="section-title">Shopping Cart</h1>
+      </div>
+
+      <!-- Main Cart Layout -->
+      <div id="cart-content" class="cart-grid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Empty Cart State -->
+      <div id="empty-cart-state" class="text-center" style="display:none; padding:5rem 2rem; background:white; border-radius:var(--radius-lg); border:1px solid var(--border-light); max-width:600px; margin:0 auto;">
+        <span style="font-size:3.5rem; display:block; margin-bottom:1rem;">🛍️</span>
+        <h2>Your Shopping Bag is Empty</h2>
+        <p style="color:var(--text-muted); margin-bottom:2rem; font-size:1.05rem;">Looks like you haven't added any luxury dresses to your bag yet.</p>
+        <a href="shop.html" class="btn btn-lg btn-primary">Discover Collection</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Navigation Footer -->
+  <footer id="main-footer"></footer>
+
+  <!-- JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.renderHeader('cart');
+      UI.renderFooter();
+
+      let currentDiscountPercent = 0;
+
+      function renderCart() {
+        const cartItems = Cart.getItems();
+        const cartContent = document.getElementById('cart-content');
+        const emptyState = document.getElementById('empty-cart-state');
+
+        if (!cartItems || cartItems.length === 0) {
+          cartContent.style.display = 'none';
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        cartContent.style.display = 'grid';
+        emptyState.style.display = 'none';
+
+        const totals = Cart.getTotals(currentDiscountPercent);
+
+        cartContent.innerHTML = `
+          <!-- Cart Items Table -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <span style="font-size:1.1rem; font-weight:700;">Cart Items (${totals.itemCount})</span>
+              <button id="clear-cart-btn" class="btn btn-sm btn-outline" style="color:var(--danger); border-color:rgba(198,40,40,0.3);">
+                🗑️ Clear Bag
+              </button>
+            </div>
+
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Size</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${cartItems.map(item => `
+                  <tr data-id="${item.productId}" data-size="${item.size}">
+                    <td>
+                      <div class="cart-item-flex">
+                        <img src="${item.image}" alt="${item.name}" class="cart-thumb">
+                        <div>
+                          <a href="product.html?id=${item.productId}" style="font-weight:700; color:var(--dark); display:block; line-height:1.3;">${item.name}</a>
+                          <span style="font-size:0.8rem; color:var(--text-muted);">${item.category}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="size-pill selected" style="width:34px; height:34px;">${item.size}</span>
+                    </td>
+                    <td style="font-weight:600;">${UI.formatCurrency(item.price)}</td>
+                    <td>
+                      <div class="quantity-control" style="transform:scale(0.85); transform-origin:left center;">
+                        <button type="button" class="qty-btn item-minus" data-id="${item.productId}" data-size="${item.size}">-</button>
+                        <input type="text" class="qty-input" value="${item.quantity}" readonly>
+                        <button type="button" class="qty-btn item-plus" data-id="${item.productId}" data-size="${item.size}">+</button>
+                      </div>
+                    </td>
+                    <td style="font-weight:700; color:var(--primary);">${UI.formatCurrency(item.price * item.quantity)}</td>
+                    <td>
+                      <button class="btn btn-sm item-remove" data-id="${item.productId}" data-size="${item.size}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;" title="Remove Item">
+                        &times;
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+
+            <div style="margin-top:1.5rem;">
+              <a href="shop.html" class="btn btn-outline">← Continue Shopping</a>
+            </div>
+          </div>
+
+          <!-- Order Summary Sidebar -->
+          <div class="order-summary-card">
+            <h3 style="font-size:1.35rem; margin-bottom:1.5rem;">Order Summary</h3>
+            
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span style="font-weight:600;">${UI.formatCurrency(totals.subtotal)}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Estimated Tax (5%)</span>
+              <span>${UI.formatCurrency(totals.tax)}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Shipping Fee</span>
+              <span>${totals.shipping === 0 ? '<strong style="color:var(--success);">FREE</strong>' : UI.formatCurrency(totals.shipping)}</span>
+            </div>
+
+            ${totals.discount > 0 ? `
+              <div class="summary-row" style="color:var(--success);">
+                <span>Promo Discount (10%)</span>
+                <span>-${UI.formatCurrency(totals.discount)}</span>
+              </div>
+            ` : ''}
+
+            <!-- Coupon Code Field -->
+            <div style="margin: 1.5rem 0; padding-top:1rem; border-top:1px solid var(--border-light);">
+              <label class="form-label" style="font-size:0.82rem;">PROMO CODE:</label>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="coupon-input" class="form-input" placeholder="Try LUNA10" style="padding:0.5rem 0.8rem; font-size:0.9rem;" value="${currentDiscountPercent > 0 ? 'LUNA10' : ''}">
+                <button type="button" id="apply-coupon-btn" class="btn btn-sm btn-outline">Apply</button>
+              </div>
+            </div>
+
+            <div class="summary-row total">
+              <span>Grand Total</span>
+              <span style="color:var(--primary);">${UI.formatCurrency(totals.total)}</span>
+            </div>
+
+            <a href="checkout.html" class="btn btn-lg btn-primary btn-block" style="margin-top:1.5rem;">
+              Proceed to Checkout →
+            </a>
+
+            <div style="margin-top:1rem; text-align:center; font-size:0.8rem; color:var(--text-muted);">
+              🔒 256-Bit SSL Encrypted Checkout
+            </div>
+          </div>
+        `;
+
+        bindCartEvents();
+      }
+
+      function bindCartEvents() {
+        // Quantity Minus
+        document.querySelectorAll('.item-minus').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const size = btn.getAttribute('data-size');
+            const item = Cart.getItems().find(i => i.productId === Number(id) && i.size === size);
+            if (item) {
+              Cart.updateQuantity(id, size, item.quantity - 1);
+              UI.updateCartBadge();
+              renderCart();
+            }
+          });
+        });
+
+        // Quantity Plus
+        document.querySelectorAll('.item-plus').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const size = btn.getAttribute('data-size');
+            const item = Cart.getItems().find(i => i.productId === Number(id) && i.size === size);
+            if (item) {
+              Cart.updateQuantity(id, size, item.quantity + 1);
+              UI.updateCartBadge();
+              renderCart();
+            }
+          });
+        });
+
+        // Item Remove
+        document.querySelectorAll('.item-remove').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const size = btn.getAttribute('data-size');
+            const res = Cart.removeItem(id, size);
+            UI.showToast(res.message, 'info');
+            UI.updateCartBadge();
+            renderCart();
+          });
+        });
+
+        // Clear Cart
+        const clearBtn = document.getElementById('clear-cart-btn');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            Cart.clear();
+            UI.showToast('Shopping bag cleared.', 'info');
+            UI.updateCartBadge();
+            renderCart();
+          });
+        }
+
+        // Apply Coupon
+        const applyCouponBtn = document.getElementById('apply-coupon-btn');
+        if (applyCouponBtn) {
+          applyCouponBtn.addEventListener('click', () => {
+            const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+            if (code === 'LUNA10') {
+              currentDiscountPercent = 10;
+              UI.showToast('10% Promo Discount Applied!', 'success');
+              renderCart();
+            } else if (code === '') {
+              currentDiscountPercent = 0;
+              renderCart();
+            } else {
+              UI.showToast('Invalid promo code.', 'danger');
+            }
+          });
+        }
+      }
+
+      // Initial Cart Render
+      renderCart();
+    });
+  </script>
+</body>
+</html>

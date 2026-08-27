@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details | Luna Dresses</title>
+  <meta name="description" content="Explore detailed specifications, fabric details, size options, and reviews for Luna Dresses boutique designs.">
+  
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header id="main-header"></header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Breadcrumb navigation -->
+      <nav style="margin-bottom:2rem; font-size:0.9rem; color:var(--text-muted);">
+        <a href="index.html">Home</a> &nbsp;/&nbsp; 
+        <a href="shop.html">Shop</a> &nbsp;/&nbsp; 
+        <span id="breadcrumb-category">Dresses</span> &nbsp;/&nbsp; 
+        <span id="breadcrumb-title" style="color:var(--dark); font-weight:600;">Product Details</span>
+      </nav>
+
+      <!-- Main Product Grid -->
+      <div id="product-detail-container" class="product-detail-grid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Related Dresses Section -->
+      <section style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid var(--border-light);">
+        <div class="section-header">
+          <span class="section-subtitle">YOU MAY ALSO LOVE</span>
+          <h2 class="section-title">Related Designs</h2>
+        </div>
+        <div id="related-dresses-grid" class="products-grid">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Navigation Footer -->
+  <footer id="main-footer"></footer>
+
+  <!-- JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.renderHeader('shop');
+      UI.renderFooter();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id') || 1;
+      const product = Products.getById(productId) || Products.getAll()[0];
+
+      if (!product) {
+        window.location.href = 'shop.html';
+        return;
+      }
+
+      // Update Breadcrumb & Page Title
+      document.title = `${product.name} | Luna Dresses`;
+      document.getElementById('breadcrumb-category').textContent = product.category;
+      document.getElementById('breadcrumb-title').textContent = product.name;
+
+      const container = document.getElementById('product-detail-container');
+      let selectedSize = (product.sizes && product.sizes.length > 0) ? product.sizes[0] : 'M';
+      let quantity = 1;
+
+      container.innerHTML = `
+        <div class="product-gallery-main">
+          <img src="${product.image}" alt="${product.name}" id="main-product-img">
+        </div>
+
+        <div class="product-info-panel">
+          ${product.badge ? `<span class="dress-badge ${product.badge.toLowerCase()}" style="position:static; margin-bottom:0.75rem; display:inline-block;">${product.badge}</span>` : ''}
+          <span style="font-size:0.85rem; color:var(--primary); font-weight:700; text-transform:uppercase; letter-spacing:1.5px; display:block; margin-bottom:0.25rem;">${product.category} COLLECTION</span>
+          
+          <h1>${product.name}</h1>
+
+          <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.25rem;">
+            <div style="color:#d4af37; font-weight:700; font-size:1.05rem;">
+              ★ ${product.rating} <span style="color:var(--text-muted); font-size:0.9rem; font-weight:normal;">(${product.reviewsCount} customer reviews)</span>
+            </div>
+            <span style="color:var(--border-color);">|</span>
+            <span style="color:var(--success); font-weight:600; font-size:0.9rem;">In Stock & Ready to Ship</span>
+          </div>
+
+          <div class="product-detail-price">
+            ${UI.formatCurrency(product.price)}
+            ${product.originalPrice ? `<span class="dress-original-price" style="font-size:1.3rem;">${UI.formatCurrency(product.originalPrice)}</span>` : ''}
+          </div>
+
+          <p style="color:var(--text-main); font-size:1.05rem; line-height:1.7; margin-bottom:1.75rem;">
+            ${product.description}
+          </p>
+
+          <!-- Size Selector -->
+          <div class="size-selector-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label class="form-label">SELECT SIZE:</label>
+              <a href="#" id="size-guide-trigger" style="font-size:0.82rem; color:var(--primary); text-decoration:underline;">Size Guide</a>
+            </div>
+            <div class="size-options-pills" id="detail-size-pills">
+              ${(product.sizes || ['S','M','L','XL']).map(size => `
+                <button type="button" class="size-pill-lg ${size === selectedSize ? 'active' : ''}" data-size="${size}">${size}</button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Quantity Selector & Actions -->
+          <div style="display:flex; gap:1rem; align-items:center; margin:2rem 0;">
+            <div class="quantity-control">
+              <button type="button" class="qty-btn" id="qty-minus">-</button>
+              <input type="text" class="qty-input" id="qty-val" value="1" readonly>
+              <button type="button" class="qty-btn" id="qty-plus">+</button>
+            </div>
+
+            <button type="button" id="add-to-cart-btn" class="btn btn-lg btn-primary" style="flex:1;">
+              🛒 Add To Cart
+            </button>
+            
+            <button type="button" id="buy-now-btn" class="btn btn-lg btn-secondary">
+              Buy Now
+            </button>
+          </div>
+
+          <!-- Product Attributes Specs -->
+          <div style="background:white; padding:1.5rem; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-top:2rem;">
+            <div style="display:flex; gap:2rem; font-size:0.9rem;">
+              <div>
+                <strong style="color:var(--dark);">Fabric:</strong><br>
+                <span style="color:var(--text-muted);">${product.fabric}</span>
+              </div>
+              <div>
+                <strong style="color:var(--dark);">Care:</strong><br>
+                <span style="color:var(--text-muted);">Dry Clean Only</span>
+              </div>
+              <div>
+                <strong style="color:var(--dark);">Shipping:</strong><br>
+                <span style="color:var(--text-muted);">Express 2-3 Business Days</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      // Size Selection Handler
+      const sizePills = document.querySelectorAll('#detail-size-pills .size-pill-lg');
+      sizePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          sizePills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          selectedSize = pill.getAttribute('data-size');
+        });
+      });
+
+      // Quantity Plus/Minus Handlers
+      const qtyMinus = document.getElementById('qty-minus');
+      const qtyPlus = document.getElementById('qty-plus');
+      const qtyVal = document.getElementById('qty-val');
+
+      qtyMinus.addEventListener('click', () => {
+        if (quantity > 1) {
+          quantity--;
+          qtyVal.value = quantity;
+        }
+      });
+
+      qtyPlus.addEventListener('click', () => {
+        quantity++;
+        qtyVal.value = quantity;
+      });
+
+      // Add to Cart Button
+      document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+        const res = Cart.addItem(product.id, selectedSize, quantity);
+        if (res.success) {
+          UI.showToast(res.message, 'success');
+          UI.updateCartBadge();
+        }
+      });
+
+      // Buy Now Button
+      document.getElementById('buy-now-btn').addEventListener('click', () => {
+        Cart.addItem(product.id, selectedSize, quantity);
+        UI.updateCartBadge();
+        window.location.href = 'cart.html';
+      });
+
+      // Render Related Products
+      const relatedGrid = document.getElementById('related-dresses-grid');
+      const related = Products.getAll().filter(p => p.id !== product.id).slice(0, 3);
+      if (relatedGrid && related.length > 0) {
+        relatedGrid.innerHTML = related.map(p => UI.createDressCardHTML(p)).join('');
+        UI.bindCardEvents(relatedGrid);
+      }
+    });
+  </script>
+</body>
+</html>

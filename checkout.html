@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Luna Dresses</title>
+  <meta name="description" content="Complete your purchase securely at Luna Dresses. Fast express shipping and easy order confirmation.">
+  
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    /* Modal overlay styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 30, 36, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1.5rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      max-width: 580px;
+      width: 100%;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header id="main-header"></header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Header -->
+      <div style="margin-bottom: 2.5rem; text-align: center;">
+        <span class="section-subtitle">SECURE CHECKOUT</span>
+        <h1 class="section-title">Complete Your Order</h1>
+      </div>
+
+      <div class="cart-grid">
+        <!-- Checkout Form Panel -->
+        <div style="background:white; padding:2.25rem; border-radius:var(--radius-md); border:1px solid var(--border-light);">
+          <form id="checkout-form">
+            
+            <h3 style="font-size:1.3rem; margin-bottom:1.25rem;">1. Contact Information</h3>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap:1rem;">
+              <div class="form-group">
+                <label for="chk-name" class="form-label">Full Name *</label>
+                <input type="text" id="chk-name" class="form-input" placeholder="Eleanor Vance" required>
+              </div>
+              <div class="form-group">
+                <label for="chk-email" class="form-label">Email Address *</label>
+                <input type="email" id="chk-email" class="form-input" placeholder="name@example.com" required>
+              </div>
+            </div>
+
+            <h3 style="font-size:1.3rem; margin:1.75rem 0 1.25rem;">2. Shipping Address</h3>
+            <div class="form-group">
+              <label for="chk-address" class="form-label">Street Address *</label>
+              <input type="text" id="chk-address" class="form-input" placeholder="742 Evergreen Terrace, Suite 400" required>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap:1rem;">
+              <div class="form-group">
+                <label for="chk-city" class="form-label">City *</label>
+                <input type="text" id="chk-city" class="form-input" placeholder="New York" required>
+              </div>
+              <div class="form-group">
+                <label for="chk-state" class="form-label">State / Region *</label>
+                <input type="text" id="chk-state" class="form-input" placeholder="NY" required>
+              </div>
+              <div class="form-group">
+                <label for="chk-zip" class="form-label">ZIP Code *</label>
+                <input type="text" id="chk-zip" class="form-input" placeholder="10001" required>
+              </div>
+            </div>
+
+            <h3 style="font-size:1.3rem; margin:1.75rem 0 1.25rem;">3. Payment Method Simulation</h3>
+            <div class="form-group" style="display:flex; gap:1rem; margin-bottom:1.25rem;">
+              <label style="flex:1; border:1px solid var(--primary); background:var(--primary-light); padding:1rem; border-radius:var(--radius-md); cursor:pointer; display:flex; align-items:center; gap:0.5rem;">
+                <input type="radio" name="payment" value="card" checked style="accent-color:var(--primary);">
+                <strong>💳 Credit / Debit Card</strong>
+              </label>
+              <label style="flex:1; border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-md); cursor:pointer; display:flex; align-items:center; gap:0.5rem;">
+                <input type="radio" name="payment" value="paypal" style="accent-color:var(--primary);">
+                <strong>🅿️ PayPal Express</strong>
+              </label>
+            </div>
+
+            <div id="card-fields">
+              <div class="form-group">
+                <label for="chk-card-num" class="form-label">Card Number</label>
+                <input type="text" id="chk-card-num" class="form-input" placeholder="4242 •••• •••• 4242" value="4242 4242 4242 4242">
+              </div>
+              <div class="grid" style="grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label for="chk-expiry" class="form-label">Expiry Date</label>
+                  <input type="text" id="chk-expiry" class="form-input" placeholder="MM/YY" value="12/28">
+                </div>
+                <div class="form-group">
+                  <label for="chk-cvv" class="form-label">CVC / CVV</label>
+                  <input type="password" id="chk-cvv" class="form-input" placeholder="123" value="888" maxlength="4">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-lg btn-primary btn-block" style="margin-top:2rem;">
+              🔒 Complete Purchase & Place Order
+            </button>
+          </form>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div id="checkout-summary-panel" class="order-summary-card">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Order Confirmation Modal -->
+  <div id="confirmation-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <div style="width:70px; height:70px; background:var(--success-bg); color:var(--success); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1.25rem;">
+        ✓
+      </div>
+      <h2 style="font-size:2rem; margin-bottom:0.5rem;">Order Confirmed!</h2>
+      <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1.5rem;">Thank you for shopping with Luna Dresses. Your order has been placed successfully.</p>
+      
+      <div style="background:var(--light); padding:1.25rem; border-radius:var(--radius-md); text-align:left; margin-bottom:1.75rem; font-size:0.9rem;">
+        <div style="margin-bottom:0.4rem;"><strong>Order Code:</strong> <span id="conf-order-code" style="color:var(--primary); font-weight:700;"></span></div>
+        <div style="margin-bottom:0.4rem;"><strong>Deliver To:</strong> <span id="conf-customer-name"></span></div>
+        <div style="margin-bottom:0.4rem;"><strong>Shipping Address:</strong> <span id="conf-address"></span></div>
+        <div><strong>Est. Delivery:</strong> <span id="conf-delivery-date" style="color:var(--success); font-weight:600;"></span></div>
+      </div>
+
+      <a href="shop.html" class="btn btn-lg btn-primary btn-block">Continue Shopping</a>
+    </div>
+  </div>
+
+  <!-- Navigation Footer -->
+  <footer id="main-footer"></footer>
+
+  <!-- JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.renderHeader('cart');
+      UI.renderFooter();
+
+      const cartItems = Cart.getItems();
+
+      // If cart is empty, redirect to shop
+      if (!cartItems || cartItems.length === 0) {
+        UI.showToast('Your bag is empty. Please add dresses before checking out.', 'warning');
+        setTimeout(() => { window.location.href = 'shop.html'; }, 1200);
+        return;
+      }
+
+      const totals = Cart.getTotals();
+      const currentUser = Auth.getCurrentUser();
+
+      // Pre-fill user data if logged in
+      if (currentUser) {
+        document.getElementById('chk-name').value = currentUser.name;
+        document.getElementById('chk-email').value = currentUser.email;
+      }
+
+      // Render Summary Panel
+      const summaryPanel = document.getElementById('checkout-summary-panel');
+      summaryPanel.innerHTML = `
+        <h3 style="font-size:1.35rem; margin-bottom:1.25rem;">Items in Order (${totals.itemCount})</h3>
+        
+        <div style="max-height:300px; overflow-y:auto; margin-bottom:1.5rem; padding-right:0.5rem;">
+          ${cartItems.map(item => `
+            <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border-light);">
+              <img src="${item.image}" alt="${item.name}" style="width:50px; height:65px; object-fit:cover; border-radius:4px;">
+              <div style="flex:1;">
+                <h4 style="font-size:0.9rem; margin:0; line-height:1.2;">${item.name}</h4>
+                <span style="font-size:0.78rem; color:var(--text-muted);">Size: <strong>${item.size}</strong> | Qty: ${item.quantity}</span>
+              </div>
+              <div style="font-weight:700; font-size:0.95rem; color:var(--primary);">${UI.formatCurrency(item.price * item.quantity)}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>${UI.formatCurrency(totals.subtotal)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax (5%)</span>
+          <span>${UI.formatCurrency(totals.tax)}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span>${totals.shipping === 0 ? '<strong style="color:var(--success);">FREE</strong>' : UI.formatCurrency(totals.shipping)}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Order Total</span>
+          <span style="color:var(--primary);">${UI.formatCurrency(totals.total)}</span>
+        </div>
+      `;
+
+      // Handle Checkout Form Submission
+      const form = document.getElementById('checkout-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('chk-name').value.trim();
+        const email = document.getElementById('chk-email').value.trim();
+        const address = document.getElementById('chk-address').value.trim();
+        const city = document.getElementById('chk-city').value.trim();
+        const state = document.getElementById('chk-state').value.trim();
+        const zip = document.getElementById('chk-zip').value.trim();
+
+        // Generate Order Reference
+        const orderCode = 'LUNA-ORD-' + Math.floor(10000 + Math.random() * 90000);
+        
+        const estDelivery = new Date();
+        estDelivery.setDate(estDelivery.getDate() + 3);
+        const estDeliveryStr = estDelivery.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+        const orderObj = {
+          orderCode: orderCode,
+          customerName: name,
+          customerEmail: email,
+          shippingAddress: `${address}, ${city}, ${state} ${zip}`,
+          items: cartItems,
+          totals: totals,
+          createdAt: new Date().toISOString(),
+          estimatedDelivery: estDeliveryStr
+        };
+
+        // Save order to LocalStorage
+        Storage.saveOrder(orderObj);
+
+        // CLEAR CART FROM LOCALSTORAGE
+        Cart.clear();
+        UI.updateCartBadge();
+
+        // Display Modal Confirmation
+        document.getElementById('conf-order-code').textContent = orderCode;
+        document.getElementById('conf-customer-name').textContent = name;
+        document.getElementById('conf-address').textContent = `${address}, ${city}, ${state} ${zip}`;
+        document.getElementById('conf-delivery-date').textContent = estDeliveryStr;
+
+        document.getElementById('confirmation-modal').style.display = 'flex';
+      });
+    });
+  </script>
+</body>
+</html>

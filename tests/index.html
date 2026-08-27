@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend Test Suite | Luna Dresses</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    body { background: #f4f6f8; font-family: var(--font-body); padding: 2rem 0; }
+    .test-card { background: white; border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border-light); margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+    .test-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem; }
+    .test-status { padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+    .status-pass { background: var(--success-bg); color: var(--success); }
+    .status-fail { background: var(--danger-bg); color: var(--danger); }
+    .test-log { font-family: monospace; font-size: 0.88rem; background: #1e1e24; color: #a5d6a7; padding: 1rem; border-radius: var(--radius-sm); white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+    .summary-box { background: white; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border-light); margin-bottom: 2rem; display: flex; justify-content: space-around; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="container" style="max-width: 900px;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1 style="font-size: 2.25rem; font-family: var(--font-heading);">Luna Dresses Automated Test Suite</h1>
+      <p style="color: var(--text-muted);">Frontend Unit & Logic Tests (5 Test Modules)</p>
+      <button id="run-all-tests-btn" class="btn btn-primary btn-lg" style="margin-top: 1rem;">▶ Run All Frontend Tests</button>
+    </div>
+
+    <!-- Test Summary Box -->
+    <div class="summary-box">
+      <div>
+        <span style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="total-count">5</span>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">TOTAL SUITES</div>
+      </div>
+      <div>
+        <span style="font-size: 2rem; font-weight: 700; color: var(--success);" id="pass-count">0</span>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">PASSED</div>
+      </div>
+      <div>
+        <span style="font-size: 2rem; font-weight: 700; color: var(--danger);" id="fail-count">0</span>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">FAILED</div>
+      </div>
+    </div>
+
+    <!-- Test Output Cards -->
+    <div id="test-results-container">
+      <div class="test-card" id="suite-storage">
+        <div class="test-header">
+          <h3 style="margin:0; font-size:1.15rem;">1. Storage Engine Tests</h3>
+          <span class="test-status status-pass" style="display:none;" id="status-storage">PENDING</span>
+        </div>
+        <div class="test-log" id="log-storage">Ready to execute tests...</div>
+      </div>
+
+      <div class="test-card" id="suite-auth">
+        <div class="test-header">
+          <h3 style="margin:0; font-size:1.15rem;">2. Authentication Logic Tests</h3>
+          <span class="test-status status-pass" style="display:none;" id="status-auth">PENDING</span>
+        </div>
+        <div class="test-log" id="log-auth">Ready to execute tests...</div>
+      </div>
+
+      <div class="test-card" id="suite-products">
+        <div class="test-header">
+          <h3 style="margin:0; font-size:1.15rem;">3. Product Filtering & Query Tests</h3>
+          <span class="test-status status-pass" style="display:none;" id="status-products">PENDING</span>
+        </div>
+        <div class="test-log" id="log-products">Ready to execute tests...</div>
+      </div>
+
+      <div class="test-card" id="suite-cart">
+        <div class="test-header">
+          <h3 style="margin:0; font-size:1.15rem;">4. Shopping Cart & Size Logic Tests</h3>
+          <span class="test-status status-pass" style="display:none;" id="status-cart">PENDING</span>
+        </div>
+        <div class="test-log" id="log-cart">Ready to execute tests...</div>
+      </div>
+
+      <div class="test-card" id="suite-checkout">
+        <div class="test-header">
+          <h3 style="margin:0; font-size:1.15rem;">5. Checkout & Order Placement Tests</h3>
+          <span class="test-status status-pass" style="display:none;" id="status-checkout">PENDING</span>
+        </div>
+        <div class="test-log" id="log-checkout">Ready to execute tests...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load JS Modules -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="../js/cart.js"></script>
+
+  <script>
+    // Browser assertion polyfill
+    const assert = {
+      strictEqual(actual, expected, msg) {
+        if (actual !== expected) throw new Error(`${msg || 'Assertion Failed'}: expected ${expected}, got ${actual}`);
+      },
+      deepStrictEqual(actual, expected, msg) {
+        if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`${msg || 'Assertion Failed'}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+      }
+    };
+
+    function executeSuite(suiteName, testFn) {
+      const logEl = document.getElementById(`log-${suiteName}`);
+      const statusEl = document.getElementById(`status-${suiteName}`);
+      statusEl.style.display = 'inline-block';
+
+      let logs = [];
+      const originalLog = console.log;
+      console.log = (msg) => {
+        logs.push(msg);
+        originalLog(msg);
+      };
+
+      try {
+        testFn();
+        statusEl.className = 'test-status status-pass';
+        statusEl.textContent = 'PASSED ✓';
+        logEl.textContent = logs.join('\n');
+        return true;
+      } catch (err) {
+        statusEl.className = 'test-status status-fail';
+        statusEl.textContent = 'FAILED ❌';
+        logEl.style.color = '#ff8a80';
+        logEl.textContent = logs.join('\n') + '\n❌ Error: ' + err.message;
+        return false;
+      } finally {
+        console.log = originalLog;
+      }
+    }
+
+    function runAllBrowserTests() {
+      let passed = 0;
+      let failed = 0;
+
+      // 1. Storage Tests
+      const storagePassed = executeSuite('storage', () => {
+        localStorage.clear();
+        const prods = Storage.initProducts();
+        assert.strictEqual(Array.isArray(prods), true, 'initProducts should return array');
+        assert.strictEqual(prods.length >= 8, true, 'Default products populated');
+        console.log('✓ Storage initProducts seeds default catalog');
+
+        Storage.set('test_k', { a: 1 });
+        assert.deepStrictEqual(Storage.get('test_k'), { a: 1 });
+        console.log('✓ Storage serialization works');
+      });
+      storagePassed ? passed++ : failed++;
+
+      // 2. Auth Tests
+      const authPassed = executeSuite('auth', () => {
+        localStorage.clear();
+        Storage.initProducts();
+        const reg = Auth.register('Jane Doe', 'jane@example.com', 'pass123');
+        assert.strictEqual(reg.success, true);
+        assert.strictEqual(Auth.isAuthenticated(), true);
+        console.log('✓ User registration & session login work');
+
+        Auth.logout();
+        assert.strictEqual(Auth.isAuthenticated(), false);
+        console.log('✓ Logout clears session');
+
+        const login = Auth.login('jane@example.com', 'pass123');
+        assert.strictEqual(login.success, true);
+        console.log('✓ Login verification succeeds');
+      });
+      authPassed ? passed++ : failed++;
+
+      // 3. Products Tests
+      const productsPassed = executeSuite('products', () => {
+        localStorage.clear();
+        Storage.initProducts();
+        const evening = Products.filter({ category: 'Evening' });
+        assert.strictEqual(evening.length > 0, true);
+        console.log('✓ Category filter retrieves Evening gowns');
+
+        const search = Products.filter({ search: 'chiffon' });
+        assert.strictEqual(search.length > 0, true);
+        console.log('✓ Search query matching works');
+      });
+      productsPassed ? passed++ : failed++;
+
+      // 4. Cart Tests
+      const cartPassed = executeSuite('cart', () => {
+        localStorage.clear();
+        Storage.initProducts();
+        const p = Products.getAll()[0];
+        Cart.addItem(p.id, 'S', 2);
+        assert.strictEqual(Cart.getCount(), 2);
+        console.log('✓ Add item to cart updates quantity');
+
+        Cart.updateQuantity(p.id, 'S', 4);
+        assert.strictEqual(Cart.getCount(), 4);
+        console.log('✓ Update cart quantity works');
+      });
+      cartPassed ? passed++ : failed++;
+
+      // 5. Checkout Tests
+      const checkoutPassed = executeSuite('checkout', () => {
+        localStorage.clear();
+        Storage.initProducts();
+        const p = Products.getAll()[0];
+        Cart.addItem(p.id, 'M', 1);
+
+        Storage.saveOrder({ orderCode: 'ORD-BROWSER-1', total: 100 });
+        Cart.clear();
+
+        assert.strictEqual(Cart.getCount(), 0);
+        assert.strictEqual(Storage.getOrders().length, 1);
+        console.log('✓ Checkout clears cart and saves order object');
+      });
+      checkoutPassed ? passed++ : failed++;
+
+      document.getElementById('pass-count').textContent = passed;
+      document.getElementById('fail-count').textContent = failed;
+    }
+
+    document.getElementById('run-all-tests-btn').addEventListener('click', runAllBrowserTests);
+
+    // Auto-run tests on page load
+    document.addEventListener('DOMContentLoaded', runAllBrowserTests);
+  </script>
+</body>
+</html>

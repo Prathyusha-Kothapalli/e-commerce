@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dresses Collection Shop | Luna Dresses</title>
+  <meta name="description" content="Shop our full boutique collection of women's dresses, evening gowns, summer midis, and cocktail wear. Filter by size, price, and category.">
+  
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header id="main-header"></header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Page Header Title -->
+      <div style="margin-bottom: 2.5rem; text-align: center;">
+        <span class="section-subtitle">BOUTIQUE CATALOG</span>
+        <h1 class="section-title">Women's Dresses Collection</h1>
+        <p style="color: var(--text-muted); margin-top:0.75rem;">Explore high-fashion dresses crafted for elegance, comfort, and timeless beauty.</p>
+      </div>
+
+      <div class="shop-layout">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <h3 style="font-size:1.2rem; font-family:var(--font-heading); margin:0;">Filter Collection</h3>
+            <button id="reset-filters-btn" class="btn btn-sm btn-outline" style="padding:0.25rem 0.6rem; font-size:0.78rem;">Reset</button>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <h4 class="filter-title">Category</h4>
+            <div class="filter-options">
+              <label class="filter-checkbox">
+                <input type="radio" name="category" value="all" checked> All Categories
+              </label>
+              <label class="filter-checkbox">
+                <input type="radio" name="category" value="Evening"> Evening Gowns
+              </label>
+              <label class="filter-checkbox">
+                <input type="radio" name="category" value="Summer"> Summer Midis
+              </label>
+              <label class="filter-checkbox">
+                <input type="radio" name="category" value="Cocktail"> Cocktail & Party
+              </label>
+              <label class="filter-checkbox">
+                <input type="radio" name="category" value="Maxi"> Satin Maxi Slips
+              </label>
+              <label class="filter-checkbox">
+                <input type="radio" name="category" value="Casual"> Casual Wrap
+              </label>
+            </div>
+          </div>
+
+          <!-- Size Selector Filter -->
+          <div class="filter-group">
+            <h4 class="filter-title">Filter by Size</h4>
+            <div class="size-options-pills" id="size-filter-pills">
+              <button type="button" class="size-pill-lg active" data-size="all" style="width:38px; height:38px; font-size:0.85rem;">ALL</button>
+              <button type="button" class="size-pill-lg" data-size="S" style="width:38px; height:38px; font-size:0.85rem;">S</button>
+              <button type="button" class="size-pill-lg" data-size="M" style="width:38px; height:38px; font-size:0.85rem;">M</button>
+              <button type="button" class="size-pill-lg" data-size="L" style="width:38px; height:38px; font-size:0.85rem;">L</button>
+              <button type="button" class="size-pill-lg" data-size="XL" style="width:38px; height:38px; font-size:0.85rem;">XL</button>
+            </div>
+          </div>
+
+          <!-- Price Range Filter -->
+          <div class="filter-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+              <h4 class="filter-title" style="margin:0;">Max Price</h4>
+              <span id="price-range-val" style="font-weight:700; color:var(--primary); font-size:0.95rem;">$400</span>
+            </div>
+            <input type="range" id="price-range" min="100" max="400" step="10" value="400" style="width:100%; accent-color:var(--primary);">
+          </div>
+        </aside>
+
+        <!-- Main Product Area -->
+        <section>
+          <!-- Top Control Bar -->
+          <div class="shop-topbar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" class="form-input" placeholder="Search dresses, silk, chiffon...">
+            </div>
+
+            <div style="display:flex; align-items:center; gap:1rem;">
+              <span id="results-count" style="font-size:0.9rem; color:var(--text-muted); font-weight:500;">Showing 0 dresses</span>
+              
+              <select id="sort-select" class="form-select" style="width:auto; padding:0.5rem 1rem; font-size:0.9rem;">
+                <option value="featured">Sort by: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+                <option value="newest">New Arrivals</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dresses Product Grid -->
+          <div id="shop-products-grid" class="products-grid">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Empty State Container -->
+          <div id="empty-state" class="text-center" style="display:none; padding:4rem 2rem; background:white; border-radius:var(--radius-md); border:1px solid var(--border-light);">
+            <span style="font-size:3rem; display:block; margin-bottom:1rem;">👗</span>
+            <h3>No Dresses Match Your Filters</h3>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Try adjusting your size, category, or search term to discover available styles.</p>
+            <button id="clear-filters-empty-btn" class="btn btn-primary">Reset Filters</button>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Navigation Footer -->
+  <footer id="main-footer"></footer>
+
+  <!-- JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.renderHeader('shop');
+      UI.renderFooter();
+
+      // State variables
+      let selectedCategory = 'all';
+      let selectedSize = 'all';
+      let maxPrice = 400;
+      let searchQuery = '';
+      let sortBy = 'featured';
+
+      // Parse initial URL query parameters (e.g. ?category=Evening)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('category')) {
+        selectedCategory = urlParams.get('category');
+        const radio = document.querySelector(`input[name="category"][value="${selectedCategory}"]`);
+        if (radio) radio.checked = true;
+      }
+
+      const grid = document.getElementById('shop-products-grid');
+      const emptyState = document.getElementById('empty-state');
+      const countEl = document.getElementById('results-count');
+
+      // Main render function
+      function applyFiltersAndRender() {
+        const filtered = Products.filter({
+          category: selectedCategory,
+          size: selectedSize,
+          maxPrice: maxPrice,
+          search: searchQuery,
+          sortBy: sortBy
+        });
+
+        countEl.textContent = `Showing ${filtered.length} dress${filtered.length === 1 ? '' : 'es'}`;
+
+        if (filtered.length === 0) {
+          grid.style.display = 'none';
+          emptyState.style.display = 'block';
+        } else {
+          grid.style.display = 'grid';
+          emptyState.style.display = 'none';
+          grid.innerHTML = filtered.map(dress => UI.createDressCardHTML(dress)).join('');
+          UI.bindCardEvents(grid);
+        }
+      }
+
+      // Category Radio Listeners
+      document.querySelectorAll('input[name="category"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          selectedCategory = e.target.value;
+          applyFiltersAndRender();
+        });
+      });
+
+      // Size Pill Listeners
+      const sizePills = document.querySelectorAll('#size-filter-pills .size-pill-lg');
+      sizePills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          sizePills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          selectedSize = pill.getAttribute('data-size');
+          applyFiltersAndRender();
+        });
+      });
+
+      // Price Range Listener
+      const priceRangeInput = document.getElementById('price-range');
+      const priceRangeVal = document.getElementById('price-range-val');
+      priceRangeInput.addEventListener('input', (e) => {
+        maxPrice = Number(e.target.value);
+        priceRangeVal.textContent = `$${maxPrice}`;
+        applyFiltersAndRender();
+      });
+
+      // Search Box Listener
+      const searchInput = document.getElementById('search-input');
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        applyFiltersAndRender();
+      });
+
+      // Sort Select Listener
+      const sortSelect = document.getElementById('sort-select');
+      sortSelect.addEventListener('change', (e) => {
+        sortBy = e.target.value;
+        applyFiltersAndRender();
+      });
+
+      // Reset Filters Action
+      function resetAllFilters() {
+        selectedCategory = 'all';
+        selectedSize = 'all';
+        maxPrice = 400;
+        searchQuery = '';
+        sortBy = 'featured';
+
+        document.querySelector('input[name="category"][value="all"]').checked = true;
+        sizePills.forEach(p => p.classList.remove('active'));
+        document.querySelector('#size-filter-pills [data-size="all"]').classList.add('active');
+        priceRangeInput.value = 400;
+        priceRangeVal.textContent = '$400';
+        searchInput.value = '';
+        sortSelect.value = 'featured';
+
+        applyFiltersAndRender();
+      }
+
+      document.getElementById('reset-filters-btn').addEventListener('click', resetAllFilters);
+      document.getElementById('clear-filters-empty-btn').addEventListener('click', resetAllFilters);
+
+      // Initial Render
+      applyFiltersAndRender();
+    });
+  </script>
+</body>
+</html>
