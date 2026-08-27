@@ -33,89 +33,88 @@
 
 ---
 
-## 📁 Project Folder Structure
+## 🛠️ Dependencies
 
-```
-e-commerce/
-├── index.html              # Home Page
-├── shop.html               # Dresses Shop Page with filters
-├── product.html            # Product Details Page
-├── cart.html               # Shopping Cart Page
-├── checkout.html           # Checkout Page with Order Confirmation
-├── login.html              # Login Page
-├── register.html           # Registration Page
-├── css/
-│   ├── main.css            # Core Design Tokens, Typography & Layout
-│   ├── components.css      # UI Components (Header, Badges, Buttons, Toasts, Cards)
-│   └── pages.css           # Page-specific layout styles
-├── js/
-│   ├── storage.js          # LocalStorage data persistence layer & product seeds
-│   ├── auth.js             # Registration & Authentication logic
-│   ├── products.js         # Products filtering, search & sorting
-│   ├── cart.js             # Shopping cart engine & pricing formulas
-│   └── ui.js               # Dynamic Navbar/Footer injection & Toasts
-├── images/
-│   ├── hero-banner.jpg     # Luxury boutique hero banner
-│   ├── dress-1.jpg         # Emerald Silk Evening Gown
-│   ├── dress-2.jpg         # Floral Chiffon Summer Midi
-│   ├── dress-3.jpg         # Velvet Burgundy Cocktail Dress
-│   ├── dress-4.jpg         # Rose Gold Satin Slip Maxi
-│   ├── dress-5.jpg         # Blush Lace Wrap Dress
-│   ├── dress-6.jpg         # Bohemian White Linen Sundress
-│   ├── dress-7.jpg         # Midnight Navy Pleated Gown
-│   └── dress-8.jpg         # Champagne Sequin Mini Dress
-├── tests/
-│   ├── index.html          # Interactive Browser-based Test Runner UI
-│   ├── run_tests.js        # Node.js CLI Test Runner
-│   ├── storage.test.js     # Storage engine unit tests
-│   ├── auth.test.js        # Authentication unit tests
-│   ├── products.test.js    # Products query & filter unit tests
-│   ├── cart.test.js        # Shopping cart unit tests
-│   └── checkout.test.js    # Checkout & cart clearing unit tests
-└── README.md               # Project documentation
-```
+This application requires standard web runtime tools:
+- **Node.js** (v18.0.0 or higher) - For local execution and automated test runner.
+- **npm** (v9.0.0 or higher) - Package manager.
+- **Python** (v3.10 or higher) - Optional alternative static server.
+- **Docker** - Optional containerized execution.
+
+Manifests & Lockfiles:
+- `package.json` & `package-lock.json`
+- `requirements.txt`
 
 ---
 
-## 🚀 How to Run the Application
+## 📦 Installation
 
-### Method 1: Local HTTP Server (Recommended)
-You can launch any static HTTP server. For example, using Python's built-in HTTP server:
+To install dependencies and prepare the project locally:
 
 ```bash
-# Start local server on port 8000
-python -m http.server 8000
-```
-Then open your browser and navigate to:
-* App: [http://localhost:8000](http://localhost:8000)
-* Test Suite: [http://localhost:8000/tests/index.html](http://localhost:8000/tests/index.html)
+# Clone the repository
+git clone https://github.com/Prathyusha-Kothapalli/e-commerce.git
+cd e-commerce
 
-### Method 2: Direct File Launch
-Simply double-click `index.html` or open `index.html` directly in Google Chrome, Edge, Safari, or Firefox.
+# Install Node.js dependencies
+npm install
+
+# Optional: Initialize Python virtual environment
+python -m venv venv
+```
 
 ---
 
-## 🧪 Running Automated Tests
+## 🏗️ Build
 
-### Interactive Browser Test Runner
-1. Open `tests/index.html` in your browser.
-2. Click **"Run All Frontend Tests"** to execute all 5 test suites with visual status reports.
+To build and verify the production bundle:
 
-### Command Line Interface (CLI)
-To run tests headlessly via Node.js in the terminal:
+```bash
+# Execute production build script
+npm run build
+
+# Or build container image using Docker
+docker build -t luna-dresses .
+```
+
+---
+
+## 🚀 Run
+
+To launch the local web server:
+
+```bash
+# Run using Node server
+npm start
+
+# Or run using Python static server
+python -m http.server 8000
+
+# Or run using Docker container
+docker run -p 8000:8000 luna-dresses
+```
+
+Then open your browser and navigate to:
+- **Web App**: [http://localhost:8000](http://localhost:8000)
+- **Browser Test Suite**: [http://localhost:8000/tests/index.html](http://localhost:8000/tests/index.html)
+
+---
+
+## 💡 Usage
+
+1. Open `http://localhost:8000/index.html` to browse featured dresses and boutique categories.
+2. Click **Register** to create an account or **Sign In** using demo credentials (`demo@lunadresses.com` / `password123`).
+3. Navigate to **Shop Collection** to filter by dress size (S, M, L, XL), category, max price slider, or keyword search.
+4. Select dress size and click **Add to Cart**.
+5. Go to **Cart** to adjust quantities, apply promo code `LUNA10`, and proceed to **Checkout**.
+6. Fill in shipping information and place order to receive your confirmation code and clear the cart.
+
+---
+
+## 🧪 Testing
+
+To execute the automated unit test suite headlessly via CLI:
 
 ```bash
 node tests/run_tests.js
 ```
-
----
-
-## 💡 Technical Notes & LocalStorage Keys
-
-The application uses the following `localStorage` keys for complete offline state management:
-* `luna_products`: Stores product catalog items.
-* `luna_users`: Stores registered user user objects.
-* `luna_currentUser`: Stores active user session details.
-* `luna_cart`: Stores current shopping bag items with selected sizes and quantities.
-* `luna_orders`: Stores historical completed orders.
-"# e-commerce" 

@@ -1,0 +1,29 @@
+{
+  "name": "luna-dresses-ecommerce",
+  "version": "1.0.0",
+  "description": "Luna Dresses - Premium Women's Dresses E-Commerce Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'Building Luna Dresses production bundle...'",
+    "test": "node tests/run_tests.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "dresses",
+    "fashion",
+    "frontend",
+    "javascript",
+    "localstorage"
+  ],
+  "author": "Prathyusha Kothapalli",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nock": "^13.5.4"
+  }
+}
